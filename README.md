@@ -1,7 +1,6 @@
 # camera_correction
 
-Camera calibration data (intrinsics + lens distortion) for the **gaivotas** team's
-IMX219-based drone cameras. Kept as its own repository so it can be pulled into
+Camera calibration data (intrinsics + lens distortion) for raspberry (currently only IMX219 sensor) cameras. Kept as its own repository so it can be pulled into
 mission repos as a git submodule and updated independently of the code.
 
 ## Contents
@@ -14,10 +13,7 @@ mission repos as a git submodule and updated independently of the code.
 | `fisheye_cam.tar.gz` | 1280×720 | raw output of a ROS calibration session: 44 frames (`left-*.png`) plus its own `ost.yaml` / `ost.txt` |
 
 The files come from **separate calibration sessions** and are not rescaled copies of
-one another (focal lengths and distortion coefficients differ well beyond what a
-resolution change explains). The result stored inside `fisheye_cam.tar.gz` is also not
-identical to `imx219/ost.yaml`. Check which file matches your lens before enabling
-undistortion.
+one another 
 
 ## Format
 
@@ -40,13 +36,13 @@ mode (e.g. the IMX219 640×480 / 1920×1080 center crops) sees a different part 
 sensor, so it needs its own calibration. Distortion coefficients are defined in
 normalized coordinates and do not change with scaling.
 
-## Use in gaivotas_ccd2026
+## Use in ROS
 
-The repo is mounted at `gaivotas_common/scripts/camera_correction`:
+The repo should be mounted at `<package>/scripts/camera_correction`:
 
 ```bash
 # in the superproject (relative URL follows the protocol you cloned with, SSH or HTTPS)
-git submodule add ../camera_correction.git gaivotas_common/scripts/camera_correction
+git submodule add ../camera_correction.git <package>/scripts/camera_correction
 git submodule update --init --recursive
 ```
 
@@ -58,11 +54,11 @@ scales **K** to the stream's `~width`×`~height` and uses the calibration for
 To pick up new calibration data in the superproject:
 
 ```bash
-cd gaivotas_common/scripts/camera_correction && git pull
-cd - && git add gaivotas_common/scripts/camera_correction && git commit -m "bump camera_correction"
+cd <package>/scripts/camera_correction && git pull
+cd - && git add <package>/scripts/camera_correction && git commit -m "bump camera_correction"
 ```
 
-## Adding a calibration
+## Adding a new calibration 
 
 ```bash
 rosrun camera_calibration cameracalibrator.py \
